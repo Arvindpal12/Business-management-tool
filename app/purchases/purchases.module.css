@@ -1,0 +1,488 @@
+
+/* Main page layout */
+/* .purchasePage {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  color: #172033;
+  box-sizing: border-box;
+}
+
+.purchaseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.purchaseHeader h1 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 32px);
+}
+
+.purchaseHeader p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.purchaseButton {
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.purchaseCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.purchaseCard h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+}
+
+.purchaseEmpty {
+  padding: 32px 12px;
+  text-align: center;
+  color: #64748b;
+}
+
+.purchaseEmpty h3 {
+  margin: 0 0 8px;
+  color: #172033;
+}
+
+.purchaseError {
+  color: #b91c1c;
+  overflow-wrap: anywhere;
+}
+
+.purchaseTableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.purchaseTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.purchaseTable th,
+.purchaseTable td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.purchaseTable th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+}
+
+
+@media (max-width: 640px) {
+  .purchasePage {
+    padding: 16px;
+  }
+
+  .purchaseHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .purchaseButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .purchaseCard {
+    padding: 14px;
+  }
+
+  .purchaseTable th,
+  .purchaseTable td {
+    padding: 12px 10px;
+  }
+} */
+
+
+/* Main page: global black background se alag clean layout */
+.purchasePage {
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  padding: 28px;
+  box-sizing: border-box;
+  background: #f5f7fb;
+  color: #172033;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.purchasePage * {
+  box-sizing: border-box;
+}
+
+.purchaseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.eyebrow {
+  margin: 0 0 8px !important;
+  color: #2563eb !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.purchaseHeader h1 {
+  margin: 0 0 8px;
+  color: #172033;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.2;
+}
+
+.purchaseHeader p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.purchaseButton,
+.cancelButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.purchaseButton {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.purchaseButton:hover {
+  background: #1d4ed8;
+}
+
+.purchaseButton:active {
+  transform: translateY(1px);
+}
+
+.purchaseButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  border: 1px solid #dbe2ea;
+  background: #ffffff;
+  color: #334155;
+}
+
+.cancelButton:hover {
+  background: #f1f5f9;
+}
+
+/* Form aur history dono ke liye card design */
+.purchaseCard {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 24px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.purchaseCard h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 20px;
+}
+
+.formDescription {
+  margin: 8px 0 22px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Two-column form; chhoti screen par single column */
+.purchaseForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.formField label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #ffffff;
+  color: #172033;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.formField textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.formField input:focus,
+.formField select:focus,
+.formField textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.formField small {
+  color: #b45309;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.totalPreview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.totalPreview strong {
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.purchaseError,
+.purchaseSuccess {
+  margin-bottom: 20px;
+  padding: 13px 16px;
+  border-radius: 9px;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+
+.purchaseError {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.purchaseSuccess {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Purchase history heading */
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.historyHeader p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.countBadge {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.purchaseEmpty {
+  padding: 38px 12px;
+  text-align: center;
+}
+
+.purchaseEmpty h3 {
+  margin: 0 0 8px;
+  color: #172033;
+  font-size: 18px;
+}
+
+.purchaseEmpty p,
+.statusText {
+  margin: 0 0 20px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.purchaseEmpty .purchaseButton {
+  margin-top: 8px;
+}
+
+/* Table ko narrow screen par horizontally scroll kar sakte hain */
+.purchaseTableWrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.purchaseTable {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  text-align: left;
+  background: #ffffff;
+}
+
+.purchaseTable th,
+.purchaseTable td {
+  padding: 15px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.purchaseTable th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.purchaseTable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.purchaseTable tbody tr:hover {
+  background: #f8fafc;
+}
+
+.productCell {
+  color: #172033 !important;
+  font-weight: 600;
+}
+
+.amountCell {
+  color: #166534 !important;
+  font-weight: 700;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 640px) {
+  .purchasePage {
+    padding: 16px;
+  }
+
+  .purchaseHeader {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .purchaseHeader .purchaseButton {
+    width: 100%;
+  }
+
+  .purchaseCard {
+    padding: 16px;
+    border-radius: 11px;
+  }
+
+  .purchaseForm {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .totalPreview {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
+
+  .historyHeader {
+    align-items: flex-start;
+  }
+}
+
