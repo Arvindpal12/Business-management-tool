@@ -1,7 +1,9 @@
 
 import { NextResponse } from "next/server";
-import connectDB from "../../../lib/mongodb.js";
-import Product from "../../../models/Product.js";
+// import connectDB from "../../../lib/mongodb.js";
+// import Product from "../../../models/Product.js";
+import connectDB from "../../lib/mongodb.js";
+import Product from "../../models/Product.js";
 
 // GET: MongoDB mein save sabhi products fetch karna.
 export async function GET() {
