@@ -1,0 +1,31 @@
+// Prisma Client generate karne ke liye
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+// Supabase PostgreSQL database use karne ke liye
+datasource db {
+  provider = "postgresql"
+}
+
+// BizPilot ke products database mein store karne ke liye
+model Product {
+  // Unique ID automatically generate hogi
+  id        String   @id @default(cuid())
+
+  // Product ki unique SKU
+  sku       String   @unique
+
+  // Product ka naam aur category
+  name      String
+  category  String   @default("Uncategorized")
+
+  // Product ki selling price aur stock
+  price     Float
+  stock     Int      @default(0)
+
+  // Product create aur update hone ka samay
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

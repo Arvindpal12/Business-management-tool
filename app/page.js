@@ -2125,7 +2125,9 @@
 
 // BizPilot - Responsive Business Management Dashboard
 // Products aur Sales MongoDB API ke through manage hote hain.
-
+// Expenses page ko dashboard ke andar use karne ke liye import
+import Reports from "./reports/page";
+import ExpensesPage from "./expenses/page";
 import { useEffect, useState } from "react";
 
 
@@ -2199,13 +2201,37 @@ const [purchaseSaving, setPurchaseSaving] = useState(false);
  // Customer edit karte waqt uski ID aur current form values store karte hain.
 const [editingCustomerId, setEditingCustomerId] = useState(null);
 
+// Supplier form ke input fields ki values
+const [supplierName, setSupplierName] = useState("");
+const [supplierCode, setSupplierCode] = useState("");
+const [supplierPhone, setSupplierPhone] = useState("");
+const [supplierEmail, setSupplierEmail] = useState("");
+const [supplierAddress, setSupplierAddress] = useState("");
+const [supplierStatus, setSupplierStatus] = useState("Active");
 
+// Supplier list aur loading/search state
+const [suppliers, setSuppliers] = useState([]);
+const [suppliersLoading, setSuppliersLoading] = useState(false);
+const [supplierSaving, setSupplierSaving] = useState(false);
+const [supplierSearch, setSupplierSearch] = useState("");
   // Common status message.
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
   const [productsLoading, setProductsLoading] = useState(true);
   const [productSaving, setProductSaving] = useState(false);
 
+  // Expense form ki values manage karne ke liye
+const [expenseTitle, setExpenseTitle] = useState("");
+const [expenseCategory, setExpenseCategory] = useState("General");
+const [expenseAmount, setExpenseAmount] = useState("");
+const [expenseDate, setExpenseDate] = useState("");
+const [expenseDescription, setExpenseDescription] = useState("");
+
+// Expense list aur loading status
+const [expenses, setExpenses] = useState([]);
+const [expensesLoading, setExpensesLoading] = useState(false);
+const [expenseSaving, setExpenseSaving] = useState(false);
+const [expenseSearch, setExpenseSearch] = useState("");
   // API se products load karte hain.
   async function loadProducts() {
     const response = await fetch("/api/products");
@@ -2284,7 +2310,95 @@ async function loadPurchases() {
      setCustomersLoading(false);
    }
  }
+//////////////////////////////////////////////////////////////////
+  // MongoDB API se suppliers ki list load karne ka function
+const fetchSuppliers = async () => {
+  try {
+    setSuppliersLoading(true);
 
+    const response = await fetch("/api/suppliers");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Suppliers load nahi hue.");
+    }
+
+    // API se array mila to state mein save karo
+    setSuppliers(Array.isArray(data) ? data : data.suppliers || []);
+  } catch (error) {
+    console.error("Suppliers load error:", error);
+    setSuppliers([]);
+  } finally {
+    setSuppliersLoading(false);
+  }
+};
+/////////////////////////////////////////////////////////////////////////////////////
+// MongoDB API se expenses ki list load karna
+const fetchExpenses = async () => {
+  try {
+    setExpensesLoading(true);
+
+    const response = await fetch("/api/expenses");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Expenses load nahi hue.");
+    }
+
+    setExpenses(data.expenses || []);
+  } catch (error) {
+    console.error("Expenses load error:", error);
+    setExpenses([]);
+  } finally {
+    setExpensesLoading(false);
+  }
+};
+
+// Naya expense MongoDB API mein save karna
+const handleExpenseSubmit = async (event) => {
+  event.preventDefault();
+
+  try {
+    setExpenseSaving(true);
+
+    const response = await fetch("/api/expenses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: expenseTitle,
+        category: expenseCategory,
+        amount: Number(expenseAmount),
+        date: expenseDate,
+        description: expenseDescription,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Expense save nahi hua.");
+    }
+
+    alert("Expense successfully added!");
+
+    // Save hone ke baad form clear karna
+    setExpenseTitle("");
+    setExpenseCategory("General");
+    setExpenseAmount("");
+    setExpenseDate("");
+    setExpenseDescription("");
+
+    // Expense list dobara load karna
+    await fetchExpenses();
+  } catch (error) {
+    console.error("Expense save error:", error);
+    alert(error.message || "Expense save karte waqt error aaya.");
+  } finally {
+    setExpenseSaving(false);
+  }
+};
   // Page load par database ka data fetch karte hain.
   useEffect(() => {
     async function initialisePage() {
@@ -2302,6 +2416,8 @@ async function loadPurchases() {
       await loadSales();
       await loadPurchases();
       await loadCustomers();
+      await fetchSuppliers();
+      await fetchExpenses();
     }
 
     initialisePage();
@@ -2749,7 +2865,53 @@ function handleCancelCustomerEdit() {
    setCustomerAddress("");
    setMessage("");
  }
+// Supplier ko MongoDB API mein save karne ka function
+const handleSupplierSubmit = async (event) => {
+  event.preventDefault();
 
+  try {
+    setSupplierSaving(true);
+
+    const response = await fetch("/api/suppliers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: supplierName,
+        supplierCode: supplierCode,
+        phone: supplierPhone,
+        email: supplierEmail,
+        address: supplierAddress,
+        status: supplierStatus,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Supplier save nahi hua.");
+    }
+
+    alert("Supplier successfully added!");
+
+    // Save hone ke baad form ko clear karo
+    setSupplierName("");
+    setSupplierCode("");
+    setSupplierPhone("");
+    setSupplierEmail("");
+    setSupplierAddress("");
+    setSupplierStatus("Active");
+
+    // List ko dobara load karo
+    await fetchSuppliers();
+  } catch (error) {
+    console.error("Supplier save error:", error);
+    alert(error.message || "Supplier save karte waqt error aaya.");
+  } finally {
+    setSupplierSaving(false);
+  }
+};
 
 
   // Common message component.
@@ -3835,6 +3997,210 @@ function handleCancelCustomerEdit() {
   </section>
 )}
 
+{/* SUPPLIERS MODULE */}
+{active === "Suppliers" && (
+  <section className="space-y-6">
+    {/* Suppliers page ka heading */}
+    <div>
+      <h2 className="text-2xl font-bold">Suppliers</h2>
+      <p className="mt-1 text-sm text-gray-500">
+        Apne business ke suppliers manage karo.
+      </p>
+    </div>
+
+    {/* Naya supplier add karne ka form */}
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h3 className="mb-4 text-lg font-semibold">Add New Supplier</h3>
+
+      <form onSubmit={handleSupplierSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Supplier Name *
+            </label>
+            <input
+              type="text"
+              value={supplierName}
+              onChange={(event) => setSupplierName(event.target.value)}
+              placeholder="Enter supplier name"
+              required
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Supplier Code *
+            </label>
+            <input
+              type="text"
+              value={supplierCode}
+              onChange={(event) => setSupplierCode(event.target.value)}
+              placeholder="Enter supplier code"
+              required
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              value={supplierPhone}
+              onChange={(event) => setSupplierPhone(event.target.value)}
+              placeholder="Enter phone number"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Email
+            </label>
+            <input
+              type="email"
+              value={supplierEmail}
+              onChange={(event) => setSupplierEmail(event.target.value)}
+              placeholder="Enter email"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Address
+            </label>
+            <input
+              type="text"
+              value={supplierAddress}
+              onChange={(event) => setSupplierAddress(event.target.value)}
+              placeholder="Enter address"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Status
+            </label>
+            <select
+              value={supplierStatus}
+              onChange={(event) => setSupplierStatus(event.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={supplierSaving}
+          className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {supplierSaving ? "Saving..." : "Add Supplier"}
+        </button>
+      </form>
+    </div>
+
+    {/* Database se aayi supplier list */}
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h3 className="mb-4 text-lg font-semibold">Supplier List</h3>
+
+      <input
+        type="search"
+        value={supplierSearch}
+        onChange={(event) => setSupplierSearch(event.target.value)}
+        placeholder="Search by name, code, phone or email..."
+        className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2"
+      />
+
+      {suppliersLoading ? (
+        <p className="text-gray-500">Loading suppliers...</p>
+      ) : suppliers.filter((supplier) => {
+          const search = supplierSearch.trim().toLowerCase();
+
+          return (
+            String(supplier.name || "").toLowerCase().includes(search) ||
+            String(supplier.supplierCode || "").toLowerCase().includes(search) ||
+            String(supplier.phone || "").toLowerCase().includes(search) ||
+            String(supplier.email || "").toLowerCase().includes(search)
+          );
+        }).length === 0 ? (
+        <p className="text-gray-500">Abhi koi supplier nahi mila.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px] text-left text-sm">
+            <thead>
+              <tr className="border-b bg-gray-50">
+                <th className="px-3 py-3">Name</th>
+                <th className="px-3 py-3">Supplier Code</th>
+                <th className="px-3 py-3">Phone</th>
+                <th className="px-3 py-3">Email</th>
+                <th className="px-3 py-3">Address</th>
+                <th className="px-3 py-3">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {suppliers
+                .filter((supplier) => {
+                  const search = supplierSearch.trim().toLowerCase();
+
+                  return (
+                    String(supplier.name || "").toLowerCase().includes(search) ||
+                    String(supplier.supplierCode || "").toLowerCase().includes(search) ||
+                    String(supplier.phone || "").toLowerCase().includes(search) ||
+                    String(supplier.email || "").toLowerCase().includes(search)
+                  );
+                })
+                .map((supplier) => (
+                  <tr
+                    key={supplier.id || supplier._id}
+                    className="border-b last:border-0"
+                  >
+                    <td className="px-3 py-3 font-medium">
+                      {supplier.name}
+                    </td>
+                    <td className="px-3 py-3">
+                      {supplier.supplierCode || "—"}
+                    </td>
+                    <td className="px-3 py-3">
+                      {supplier.phone || "—"}
+                    </td>
+                    <td className="px-3 py-3">
+                      {supplier.email || "—"}
+                    </td>
+                    <td className="px-3 py-3">
+                      {supplier.address || "—"}
+                    </td>
+                    <td className="px-3 py-3">
+                      {supplier.status || "Active"}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </section>
+)}
+{/* EXPENSES MODULE */}
+{active === "Expenses" && (
+  <section className="space-y-6">
+    <ExpensesPage />
+  </section>
+)}
+{active === "Reports" && (
+  <section className="space-y-6">
+    <Reports />
+  </section>
+)}
+
           {active === "Dashboard" && (
             <div className="min-w-0 space-y-7">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -3978,7 +4344,7 @@ function handleCancelCustomerEdit() {
           )}
 
           {/* Remaining modules abhi placeholders hain. */}
-          {!["Dashboard", "Products", "Sales","Purchases"].includes(active) && (
+          {!["Dashboard", "Products", "Sales","Purchases","Reports"].includes(active) && (
             <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-600">
                 {menuItems.find((item) => item.name === active)?.icon}

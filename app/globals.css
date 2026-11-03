@@ -54,3 +54,25 @@ body {
 body {
   min-height: 100vh;
 }
+/* Reports page ke PDF/print layout ke liye */
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .reports-print-root {
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .reports-print-root button,
+  .reports-print-root input {
+    display: none !important;
+  }
+
+  .reports-print-root article,
+  .reports-print-root section {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}
