@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 
-import connectDB from "../../../lib/mongodb.js";
-import Product from "../../../models/Product.js";
+// import connectDB from "../../../lib/mongodb.js";
+// import Product from "../../../models/Product.js";
+import connectDB from "../../lib/mongodb.js";
+import Product from "../../models/Product.js";
 
 // JWT secret login API wale secret se match hona chahiye.
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
