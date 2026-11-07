@@ -1,10 +1,15 @@
-
 import mongoose from "mongoose";
 
 // Supplier ka schema define kar rahe hain.
-// Isse MongoDB mein har supplier ka data ek fixed format mein save hoga.
 const supplierSchema = new mongoose.Schema(
   {
+    // Supplier kis user ke business se belong karta hai.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     // Supplier ya company ka naam
     name: {
       type: String,
@@ -12,11 +17,10 @@ const supplierSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Supplier ka unique code, jaise SUP001
+    // Supplier code, jaise SUP001
     supplierCode: {
       type: String,
       required: [true, "Supplier code is required"],
-      unique: true,
       trim: true,
     },
 
@@ -42,7 +46,7 @@ const supplierSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Supplier ke saath business active hai ya nahi
+    // Supplier active hai ya nahi
     status: {
       type: String,
       enum: ["Active", "Inactive"],
@@ -50,14 +54,19 @@ const supplierSchema = new mongoose.Schema(
     },
   },
   {
-    // Record create aur update hone ka time automatically save hoga
     timestamps: true,
   }
 );
 
-// Next.js hot reload ke waqt model dobara register hone se bachate hain.
+// Har user ke andar supplierCode unique rahega.
+supplierSchema.index(
+  { userId: 1, supplierCode: 1 },
+  { unique: true }
+);
+
+// Next.js hot reload mein existing model reuse karte hain.
 const Supplier =
   mongoose.models.Supplier ||
   mongoose.model("Supplier", supplierSchema);
 
-export default Supplier;
+export default Supplier;  

@@ -1,10 +1,15 @@
-
 import mongoose from "mongoose";
 
 // Customer schema customer ki details define karta hai.
-// Isse MongoDB mein sabhi customers ka data ek consistent format mein save hoga.
 const customerSchema = new mongoose.Schema(
   {
+    // Customer kis user ke business se belong karta hai.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     // Customer ka naam required hai.
     name: {
       type: String,
@@ -12,7 +17,7 @@ const customerSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Phone number ko String rakha hai, taaki starting mein 0 ho to bhi save rahe.
+    // Phone number String rakha hai, taaki starting mein 0 save rahe.
     phone: {
       type: String,
       trim: true,
@@ -35,13 +40,12 @@ const customerSchema = new mongoose.Schema(
     },
   },
   {
-    // Har customer ke saath createdAt aur updatedAt automatically save honge.
+    // Customer create aur update hone ka time automatically save hoga.
     timestamps: true,
   }
 );
 
-// Next.js development mein model dobara compile hone se bachane ke liye
-// existing model ko reuse karte hain.
+// Next.js development mein existing model reuse karte hain.
 const Customer =
   mongoose.models.Customer ||
   mongoose.model("Customer", customerSchema);

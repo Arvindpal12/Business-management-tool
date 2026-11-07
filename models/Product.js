@@ -5,27 +5,37 @@ import mongoose from "mongoose";
 // har product ke andar kaun-kaun se fields honge.
 const productSchema = new mongoose.Schema(
   {
+    // Har product ko us user se connect karenge jisne use create kiya.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     name: {
       type: String,
       required: [true, "Product name zaroori hai"],
       trim: true,
     },
+
     sku: {
       type: String,
       required: [true, "SKU zaroori hai"],
-      unique: true,
       trim: true,
     },
+
     category: {
       type: String,
       default: "Uncategorized",
       trim: true,
     },
+
     price: {
       type: Number,
       required: true,
       min: 0,
     },
+
     stock: {
       type: Number,
       default: 0,
@@ -38,8 +48,11 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// Next.js development reload mein model dobara register
-// hone se bachane ke liye existing model reuse karte hain.
+// Ek user ke andar SKU unique rahega,
+// lekin alag users same SKU use kar sakenge.
+productSchema.index({ userId: 1, sku: 1 }, { unique: true });
+
+// Next.js development reload mein existing model reuse karte hain.
 const Product =
   mongoose.models.Product ||
   mongoose.model("Product", productSchema);

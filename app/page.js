@@ -2126,9 +2126,12 @@
 // BizPilot - Responsive Business Management Dashboard
 // Products aur Sales MongoDB API ke through manage hote hain.
 // Expenses page ko dashboard ke andar use karne ke liye import
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Reports from "./reports/page";
 import ExpensesPage from "./expenses/page";
-import { useEffect, useState } from "react";
+
 
 
 const menuItems = [
@@ -2160,6 +2163,10 @@ function formatCurrency(amount) {
 }
 
 export default function Home() {
+    // Authentication ke liye router aur session states
+  const router = useRouter();
+  const [authLoading, setAuthLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
   const [active, setActive] = useState("Dashboard");
 
   // Products aur product form ki states.
@@ -2399,8 +2406,39 @@ const handleExpenseSubmit = async (event) => {
     setExpenseSaving(false);
   }
 };
-  // Page load par database ka data fetch karte hain.
+  // Dashboard load hone se pehle login session verify karte hain.
   useEffect(() => {
+    async function checkAuthentication() {
+      try {
+        const response = await fetch("/api/auth/me", {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.user) {
+          router.replace("/login");
+          return;
+        }
+
+        setCurrentUser(data.user);
+      } catch (error) {
+        console.error("Authentication error:", error);
+        router.replace("/login");
+      } finally {
+        setAuthLoading(false);
+      }
+    }
+
+    checkAuthentication();
+  }, [router]);
+  // Page load par database ka data fetch karte hain.
+   // Login verify hone ke baad hi business data load hoga.
+  useEffect(() => {
+    if (!currentUser) return;
+
     async function initialisePage() {
       setProductsLoading(true);
 
@@ -2421,7 +2459,7 @@ const handleExpenseSubmit = async (event) => {
     }
 
     initialisePage();
-  }, []);
+  }, [currentUser]);
 
   // Selected product ki default price sale form mein set karte hain.
   useEffect(() => {
@@ -2431,7 +2469,7 @@ const handleExpenseSubmit = async (event) => {
 
     setSellingPrice(product ? String(product.price ?? "") : "");
   }, [selectedProduct, products]);
-
+//////////////////////////////////////////////////////////////////////
   // Product form ke fields update karte hain.
   function handleChange(event) {
     const { name, value } = event.target;
@@ -2912,25 +2950,151 @@ const handleSupplierSubmit = async (event) => {
     setSupplierSaving(false);
   }
 };
+// Logout API call karte hain.
+// async function handleLogout() {
+//   try {
+//     const response = await fetch("/api/auth/logout", {
+//       method: "POST",
+//       credentials: "include",
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Logout nahi ho saka.");
+//     }
+
+//     router.replace("/login");
+//   } catch (error) {
+//     console.error("Logout error:", error);
+//     alert(error.message || "Logout error");
+//   }
+// }
+
+// // Authentication check hone tak loading dikhate hain.
+// if (authLoading) {
+//   return (
+//     <div className="flex min-h-screen items-center justify-center">
+//       Checking login...
+//     </div>
+//   );
+// }
+
+// // Login nahi hai to dashboard nahi dikhayenge.
+// if (!currentUser) {
+//   return null;
+// }
 
 
-  // Common message component.
-  function StatusMessage() {
-    if (!message) return null;
+//   // Common message component.
+//   function StatusMessage() {
+//     if (!message) return null;
+//       // Session verify hone tak dashboard show nahi hoga.
+//   if (authLoading) {
+//     return (
+//       <div className="flex min-h-screen items-center justify-center bg-slate-50">
+//         <p className="text-sm font-medium text-slate-600">
+//           Checking login session...
+//         </p>
+//       </div>
+//     );
+//   }
 
-    return (
-      <div
-        role="status"
-        className={`mb-5 break-words rounded-xl border p-3 text-sm ${
-          messageType === "error"
-            ? "border-red-200 bg-red-50 text-red-700"
-            : "border-emerald-200 bg-emerald-50 text-emerald-700"
-        }`}
-      >
-        {message}
-      </div>
-    );
+//   if (!currentUser) {
+//     return null;
+//   }
+//     // Logout API session cookie clear karegi.
+//   async function handleLogout() {
+//     try {
+//       const response = await fetch("/api/auth/logout", {
+//         method: "POST",
+//         credentials: "include",
+//       });
+
+//       const data = await response.json();
+
+//       if (!response.ok || !data.success) {
+//         throw new Error(data.message || "Logout nahi ho saka.");
+//       }
+
+//       router.replace("/login");
+//       router.refresh();
+//     } catch (error) {
+//       console.error("Logout error:", error);
+//       setMessage(error.message || "Logout nahi ho saka.");
+//       setMessageType("error");
+//     }
+//   }
+
+//     return (
+//       <div
+//         role="status"
+//         className={`mb-5 break-words rounded-xl border p-3 text-sm ${
+//           messageType === "error"
+//             ? "border-red-200 bg-red-50 text-red-700"
+//             : "border-emerald-200 bg-emerald-50 text-emerald-700"
+//         }`}
+//       >
+//         {message}
+//       </div>
+//     );
+//   }
+
+/////////////////////////////   /////////////////////////   //////////////////
+// Logout API call karte hain.
+async function handleLogout() {
+  try {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Logout nahi ho saka.");
+    }
+
+    router.replace("/login");
+    router.refresh();
+  } catch (error) {
+    console.error("Logout error:", error);
+    setMessage(error.message || "Logout nahi ho saka.");
+    setMessageType("error");
   }
+}
+
+// Common message component.
+function StatusMessage() {
+  if (!message) return null;
+
+  return (
+    <div
+      role="status"
+      className={`mb-5 break-words rounded-xl border p-3 text-sm ${
+        messageType === "error"
+          ? "border-red-200 bg-red-50 text-red-700"
+          : "border-emerald-200 bg-emerald-50 text-emerald-700"
+      }`}
+    >
+      {message}
+    </div>
+  );
+}
+
+// Authentication check hone tak loading dikhate hain.
+if (authLoading) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <p className="text-sm font-medium text-slate-600">
+        Checking login session...
+      </p>
+    </div>
+  );
+}
+
+// Login nahi hai to dashboard nahi dikhayenge.
+if (!currentUser) {
+  return null;
+}
 
   // Responsive summary card.
   function SummaryCard({ label, value, detail, icon }) {
@@ -3005,15 +3169,34 @@ const handleSupplierSubmit = async (event) => {
               <h2 className="mt-1 break-words text-2xl font-bold">{active}</h2>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="hidden text-right sm:block">
-                <p className="text-sm font-semibold">Admin User</p>
-                <p className="text-xs text-slate-500">Business owner</p>
-              </div>
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-700">
-                A
-              </div>
-            </div>
+           {/* Logged-in user ki details aur Logout button */}
+<div className="flex items-center gap-3">
+
+  {/* User ka naam aur email database se show hoga */}
+  <div className="text-right">
+    <p className="font-semibold text-sm">
+      {currentUser?.name || "User"}
+    </p>
+
+    <p className="text-xs text-gray-500">
+      {currentUser?.email || ""}
+    </p>
+  </div>
+
+  {/* User ke naam ka first letter */}
+  <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+    {currentUser?.name?.charAt(0)?.toUpperCase() || "U"}
+  </div>
+
+  {/* Logout button */}
+  <button
+    onClick={handleLogout}
+    className="px-3 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600"
+  >
+    Logout
+  </button>
+
+</div>
           </div>
 
           {/* Mobile navigation: horizontally scrollable buttons. */}

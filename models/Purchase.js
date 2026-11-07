@@ -1,10 +1,16 @@
-
 import mongoose from "mongoose";
 
 // Purchase schema batata hai ki har purchase ki entry mein
 // kaun-kaun si details MongoDB mein save hongi.
 const purchaseSchema = new mongoose.Schema(
   {
+    // Purchase kis user ne create ki hai, uski ID save hogi.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     // Kis product ka stock khareeda gaya, uski ID.
     productId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,8 +18,7 @@ const purchaseSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Product ka naam record mein rakhne se purchase history
-    // dekhna aasan hoga, chahe baad mein product update ho.
+    // Product ka naam purchase history mein save hoga.
     productName: {
       type: String,
       required: true,
@@ -61,8 +66,7 @@ const purchaseSchema = new mongoose.Schema(
   }
 );
 
-// Model ko dobara compile karne se bachane ke liye
-// pehle se bana model reuse karte hain.
+// Next.js reload mein pehle se bana model reuse karte hain.
 const Purchase =
   mongoose.models.Purchase ||
   mongoose.model("Purchase", purchaseSchema);

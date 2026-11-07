@@ -1,29 +1,39 @@
-
 import mongoose from "mongoose";
 
-// Har sale mein product, quantity aur selling price save honge.
+// Har sale mein user, product, quantity aur selling price save honge.
 const saleSchema = new mongoose.Schema(
   {
+    // Sale kis user ne create ki hai, uski ID save hogi.
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },
+
     productName: {
       type: String,
       required: true,
       trim: true,
     },
+
     quantity: {
       type: Number,
       required: true,
       min: 1,
     },
+
     sellingPrice: {
       type: Number,
       required: true,
       min: 0,
     },
+
     totalAmount: {
       type: Number,
       required: true,
