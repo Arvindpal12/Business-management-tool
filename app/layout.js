@@ -61,7 +61,7 @@ export const metadata = {
     siteName: "BMS",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1712,
         height: 912,
         alt: "BMS Business Management System",
@@ -76,7 +76,7 @@ export const metadata = {
     title: "BMS - Business Management System",
     description:
       "Smart Business Management, Simplified.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 
   robots: {
