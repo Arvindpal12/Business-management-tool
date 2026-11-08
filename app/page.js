@@ -997,11 +997,11 @@ if (!currentUser) {
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-slate-200 bg-white p-5 md:flex">
         <div className="mb-10 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold text-white">
-            B
+          AP
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold">BizPilot</h1>
-            <p className="text-xs text-slate-500">Business management</p>
+            <h1 className="text-xl font-bold">BMS Tech.</h1>
+            <p className="text-xs text-slate-500">Business management Sy</p>
           </div>
         </div>
 
@@ -1031,9 +1031,9 @@ if (!currentUser) {
         </nav>
 
         <div className="mt-auto rounded-2xl bg-blue-50 p-4">
-          <p className="font-semibold text-blue-900">BizPilot Starter</p>
-          <p className="mt-1 text-xs leading-5 text-blue-700">
-            Apne business ko ek jagah manage karein.
+          <p className="font-semibold #D8C69A">BMS Tech.</p>
+          <p className="mt-1 text-xs leading-5 #D8C69A">
+            Manage your business in one place.
           </p>
         </div>
       </aside>
